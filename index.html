@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css2?family=Oswald&family=Titillium+Web:ital,wght@0,300;0,400;0,700;1,300;1,400;,700&display=swap');
+ .titleBar {
+	 z-index: 1;
+	 font-family: 'Oswald';
+	 font-size: 2em;
+	 position: fixed;
+	 height: 1.5em;
+	 left: 50%;
+	 transform: translateX(-50%);
+	 width: 800px;
+	 background: rgba(20, 20, 20, 0.75);
+	 box-shadow: inset 0 0 0.2em 0 rgba(0, 0, 0, 0.5);
+	 padding-top: 0.15em;
+}
+ .screenWrapper {
+	 position: absolute;
+	 top: 3.25em;
+	 left: 50%;
+	 transform: translateX(-50%);
+	 width: 800px;
+	 height: calc(100% - 9.25em);
+	 overflow-y: auto;
+	 overflow-x: hidden;
+	 background: rgba(0, 0, 0, 0.25);
+	 box-shadow: inset 0 0 0.2em 0 rgba(0, 0, 0, 0.5);
+}
+ .screenWrapper .screen {
+	 position: relative;
+}
+ .screenWrapper .screen.calendar {
+	 text-align: center;
+}
+ .screenWrapper .screen.calendar .nextMonth, .screenWrapper .screen.calendar .prevMonth {
+	 position: absolute;
+	 top: 0;
+	 right: 0.5em;
+	 padding: 0.25em 0.5em;
+	 border-radius: 20%;
+	 font-size: 1.25em;
+	 background: rgba(0, 0, 0, 0.5);
+}
+ .screenWrapper .screen.calendar .prevMonth {
+	 right: unset;
+	 left: 0.5em;
+}
+ .screenWrapper .screen.calendar .calendarWrapper {
+	 position: relative;
+	 width: 100%;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul {
+	 position: relative;
+	 margin: 0;
+	 padding-left: 8%;
+	 text-align: left;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul.titles {
+	 font-weight: bold;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul.titles li {
+	 display: inline-block;
+	 height: auto;
+	 width: 12%;
+	 vertical-align: top;
+	 text-align: center;
+	 margin: 0;
+	 padding: 0.25em 0;
+	 margin-right: 0.5em;
+	 margin-bottom: 0.5em;
+	 font-size: 1em;
+	 box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.95);
+	 background: rgba(0, 0, 0, 0.5);
+	 transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul.titles li:hover {
+	 cursor: default;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul.titles li:last-child {
+	 margin-right: 0 !important;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul:not(.titles) li {
+	 display: inline-block;
+	 min-height: 7em;
+	 width: 12%;
+	 vertical-align: top;
+	 text-align: center;
+	 margin: 0;
+	 padding: 0;
+	 margin-right: 0.5em;
+	 margin-bottom: 0.5em;
+	 font-size: 1em;
+	 box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.95);
+	 background: rgba(0, 0, 0, 0.25);
+	 overflow: hidden;
+	 transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul:not(.titles) li:hover {
+	 background: rgba(125, 125, 125, 0.1);
+	 box-shadow: 0 0 0 2px rgba(125, 125, 125, 0.25);
+	 cursor: pointer;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul:not(.titles) li:last-child {
+	 margin-right: 0 !important;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul:not(.titles) li p {
+	 font-size: 0.75em;
+	 margin: 0 0 0.25em 0;
+	 font-weight: 500;
+	 display: block;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul:not(.titles) li h2 {
+	 font-weight: normal;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul:not(.titles) li h2 .mood {
+	 display: inline-block;
+	 vertical-align: middle;
+	 position: relative;
+	 margin-left: 0.25em;
+	 margin-top: -0.15em;
+	 width: 0.75em;
+	 height: 0.75em;
+	 border-radius: 100%;
+	 background: white;
+	 box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.95);
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul .today {
+	 background: rgba(255, 255, 255, 0.1) !important;
+	 box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25) !important;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul .today h2 {
+	 font-weight: bold !important;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul .selected {
+	 box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25) !important;
+}
+ .screenWrapper .screen.calendar .calendarWrapper ul .selected h2 {
+	 font-weight: bold !important;
+}
+ .screenWrapper .screen.today textarea.log {
+	 font-size: 1.25em;
+	 width: 80% !important;
+	 height: 40vh !important;
+}
+ .screenWrapper .screen.today input.dayLabel {
+	 width: 60%;
+	 text-align: center;
+}
+ .screenWrapper .screen.today .colorWrapper .previewDot {
+	 display: inline-block;
+	 vertical-align: middle;
+	 width: 1.5em;
+	 height: 1.5em;
+	 background: transparent;
+	 border-radius: 100%;
+	 box-shadow: inset 0 0 4px 0 black;
+}
+ .screenWrapper .screen.today .colorWrapper > * {
+	 display: inline-block;
+	 vertical-align: middle;
+}
+ .nav {
+	 z-index: 1;
+	 position: fixed;
+	 bottom: 0;
+	 left: 50%;
+	 transform: translateX(-50%);
+	 width: 800px;
+	 height: 6em;
+	 background: rgba(20, 20, 20, 0.75);
+	 box-shadow: inset 0 0 0.2em 0 rgba(0, 0, 0, 0.5);
+}
+ .nav button {
+	 font-size: 2em;
+	 padding: 0.25em;
+}
+ :root {
+	 --none: transparent;
+	 --red: #ff7272;
+	 --orange: #ffa672;
+	 --yellow: #ffff72;
+	 --green: #72ff72;
+	 --cyan: #72ffff;
+	 --indigo: #7272ff;
+	 --purple: #c672ff;
+	 --magenta: #ff72d7;
+	 --black: #000;
+	 --gray: #888;
+	 --white: #fff;
+}
+ ::-webkit-scrollbar {
+	 width: 0.5em;
+}
+ ::-webkit-scrollbar-track {
+	 background: rgba(0, 0, 0, 0.25);
+	 box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.75);
+}
+ ::-webkit-scrollbar-thumb {
+	 background: rgba(20, 20, 20, 0.75);
+	 border-radius: 1em;
+}
+ ::-webkit-scrollbar-thumb:hover {
+	 background: rgba(20, 20, 20, 0.5);
+}
+ html, body {
+	 position: absolute;
+	 width: 100%;
+	 height: 100%;
+	 text-align: center;
+	 color: white;
+	 text-shadow: 2px 2px 2px black;
+	 font-family: 'Titillium Web';
+	 font-size: 1em;
+	 letter-spacing: 0.05em;
+	 user-select: none;
+	 background: #333;
+	 background: linear-gradient(132deg, #41505f 0%, #242526 100%);
+}
+ a {
+	 font-weight: bold;
+	 color: var(--purple);
+}
+ a:visited {
+	 color: var(--blue);
+}
+ h1, h2, h3, h4, h5, h6 {
+	 margin: 0.25em 0;
+}
+ h4, h5, h6 {
+	 font-weight: 300 !important;
+}
+ p {
+	 margin: 0.5em 0.1em;
+}
+ hr {
+	 border: none;
+	 border-top: 1px solid white;
+	 box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+ input[type="text"], textarea {
+	 color: white;
+	 font-family: 'Oswald';
+	 background: rgba(40, 40, 40, 0.75);
+	 border: 4px dashed rgba(0, 0, 0, 0.1);
+	 border-radius: 0.5em;
+	 padding: 0.5em;
+	 font-size: 1.15em;
+	 resize: none;
+}
+ input[type="text"]:focus-visible, textarea:focus-visible {
+	 border: 4px dashed rgba(0, 0, 0, 0.25) !important;
+	 outline: unset;
+}
+ button, .button {
+	 border: none;
+	 text-shadow: 2px 2px 2px black;
+	 box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.75);
+	 background: rgba(40, 40, 40, 0.95);
+	 padding: 0.5em 1em;
+	 border-radius: 10px;
+	 color: white;
+	 cursor: pointer;
+	 font-family: 'Oswald';
+	 font-size: 1.25em;
+	 transition: background 0.25s;
+}
+ button:hover, .button:hover {
+	 background: rgba(60, 60, 60, 0.95) !important;
+	 box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.5) !important;
+}
+ button:active, .button:active, button.current, .button.current {
+	 background: rgba(60, 60, 60, 0.95) !important;
+	 cursor: default !important;
+}
+ select {
+	 border: none;
+	 background: rgba(40, 40, 40, 0.75);
+	 padding: 0.25em 0.5em;
+	 text-shadow: 2px 2px 2px black;
+	 border-radius: 0.5em;
+	 color: white;
+	 cursor: pointer;
+	 font-family: 'Oswald';
+	 font-size: 1em;
+}
+ select option {
+	 font-size: 0.9em;
+	 background: #333 !important;
+	 text-shadow: 1px 1px 1px black;
+}
+ .hide, .hidden {
+	 display: none !important;
+}
+ .empty, .invisible, .invis {
+	 opacity: 0 !important;
+}
+ @media only screen and (max-width: 379px), only screen and (max-height: 639px) {
+	 .appWrapper {
+		 opacity: 0 !important;
+	}
+	 .unsupported.hide {
+		 display: block !important;
+		 position: absolute;
+		 width: calc(80% - 2em);
+		 padding: 1em;
+		 top: 50%;
+		 left: 50%;
+		 color: white;
+		 text-align: center;
+		 transform: translate(-50%, -50%);
+		 background: rgba(20, 20, 20, 0.95);
+		 font-size: 1.25em;
+	}
+}
+ @media only screen and (max-width: 600px) {
+	 body {
+		 font-size: 0.9em;
+	}
+	 .nav button {
+		 font-size: 1.75em;
+	}
+}
+ @media only screen and (max-width: 800px) {
+	 .screenWrapper, .titleBar, .nav {
+		 width: 100%;
+	}
+}
+ 
+	</style>
+</head>
+<body>
+<div class="appWrapper">
+	<div class="titleBar">Daily Logbook 📓</div>
+	<div class="screenWrapper">
+		<div class="calendar screen 1">
+			<h1>-Today is Mon Jan 1, 2000-</h1>
+			<h2>-January-</h2>
+			<button class="prevMonth">&lt;</button>
+			<button class="nextMonth">&gt;</button>
+			<div class="calendarWrapper">
+				<ul class="titles">
+					<li>Mon</li><!--
+					--><li>Tue</li><!--
+					--><li>Wed</li><!--
+					--><li>Thu</li><!--
+					--><li>Fri</li><!--
+					--><li>Sat</li><!--
+					--><li>Sun</li>
+				</ul>
+				<ul>
+					<li><h2>1</h2><p></p></li><!--
+					--><li><h2>2</h2><p></p></li><!--
+					--><li><h2>3</h2><p></p></li><!--
+					--><li><h2>4</h2><p></p></li><!--
+					--><li><h2>5</h2><p></p></li><!--
+					--><li><h2>6</h2><p></p></li><!--
+					--><li><h2>7</h2><p></p></li>
+				</ul>
+				<ul>
+					<li><h2>8</h2><p></p></li><!--
+					--><li><h2>9</h2><p></p></li><!--
+					--><li><h2>10</h2><p></p></li><!--
+					--><li><h2>11</h2><p></p></li><!--
+					--><li><h2>12</h2><p></p></li><!--
+					--><li><h2>13</h2><p></p></li><!--
+					--><li><h2>14</h2><p></p></li>
+				</ul>
+				<ul>
+					<li><h2>15</h2><p></p></li><!--
+					--><li><h2>16</h2><p></p></li><!--
+					--><li><h2>17</h2><p></p></li><!--
+					--><li><h2>18</h2><p></p></li><!--
+					--><li><h2>19</h2><p></p></li><!--
+					--><li><h2>20</h2><p></p></li><!--
+					--><li><h2>21</h2><p></p></li>
+				</ul>
+				<ul>
+					<li><h2>22</h2><p></p></li><!--
+					--><li><h2>23</h2><p></p></li><!--
+		 			--><li><h2>24</h2><p></p></li><!--
+					--><li><h2>25</h2><p></p></li><!--
+					--><li><h2>26</h2><p></p></li><!--
+					--><li><h2>27</h2><p></p></li><!--
+					--><li><h2>28</h2><p></p></li>
+				</ul>
+				<ul>
+					<li><h2>29</h2><p></p></li><!--
+					--><li><h2>30</h2><p></p></li><!--
+					--><li><h2>31</h2><p></p></li>
+				</ul>
+			</div>
+			<br>
+			<button class="editDay">Edit selected day</button>
+		</div>
+		<div class="today screen 2">
+			<br>
+			<h2>-Day selected: 12/27/2023-</h2>
+			<br>
+			<h3>Label this day:</h3>
+			<input class="dayLabel" type="text" placeholder="How would you label this day?...">
+			<br><br>
+			<h3>Assign a color to this day:</h3>
+			<div class="colorWrapper">
+				<div class="previewDot"></div>
+				<select class="dayCol dropdown">
+					<option value="none">None</option>
+					<option value="white">White</option>
+					<option value="gray">Gray</option>
+					<option value="black">Black</option>
+					<option value="red">Red</option>
+					<option value="orange">Orange</option>
+					<option value="yellow">Yellow</option>
+					<option value="green">Green</option>
+					<option value="cyan">Cyan</option>
+					<option value="indigo">Indigo</option>
+					<option value="purple">Purple</option>
+					<option value="magenta">Magenta</option>
+				</select>
+			</div>
+			<br>
+			<h3>Write about this day:</h3>
+			<textarea class="log" placeholder="Write your thoughts here..."></textarea>
+			<br>
+			<button class="cancel">Back</button> <button class="save">Save</button>
+			<br><br>
+		</div>
+		<div class="sidenotes screen 3">
+			<br>
+			<h1>Side notes</h1>
+			<textarea class="sidenote" placeholder="Write down anything you would like to save here..." rows=25 cols=50>THIS DOES NOT WORK YET, DON'T BOTHER USING THIS UNTIL THIS TEXT DISAPPEARS.</textarea>
+			<p>(Tip: This is very useful for long-term goal tracking!)</p>
+		</div>
+		<div class="stats screen 4">
+			<br>
+			<h1>Statistics</h1>
+			<p>(This page will display statistics and allow you to create and monitor future goals, view your previous accomplished life goals, and ideally help eliminate impostor syndrome!)</p>
+		</div>
+		<div class="settings screen 5">
+			<h1 class="tfont">Settings</h1>
+			<h2 class="name">-Username-</h2><!-- 
+			<button>Edit username</button> -->
+			<p>App theme: &nbsp;<select class="theme dropdown">
+				<option value="default">Default</option>
+				<option value="lgray">Light</option>
+				<option value="pinkvibe">Pink Bunny</option>
+				<option value="bisexual">Bisexual</option>
+				<option value="purplemoon">Purple Moon</option>
+				<option value="copper">Copper</option>
+				<option value="forest">Forest green</option>
+				<option value="aqua">Aqua</option>
+				<option value="red">Red Sunburn</option>
+				<option value="lavender">Lavender</option>
+			</select></p>
+			<label><input type="checkbox" name="autosave" class="autosave"> Autosave while editing to prevent data loss?</label>
+			<br><br>
+			<button class="export">Export data to .txt file</button>
+		</div>
+	</div>
+	<div class="nav">
+		<h2>Title</h2>
+		<button class="calendar 1" data-label="Calendar">📅</button>
+		<button class="today 2" data-label="Logbook">📓</button>
+		<button class="sidenotes 3" data-label="Side notes">✏️</button>
+		<button class="stats 4" data-label="IRL Stats">📊</button>
+		<button class="settings 5" data-label="Settings">⚙️</button>
+	</div>
+</div>
+<div class="unsupported hide">I'm sorry, but it appears that your browser window height/width is too small for the app to display all of it's features correctly.<br><br>Please increase the size of your browser window to continue.</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+	//begin to spin this up into a "github pages" site (or put on personal site)
+//after implementing importing/exporting via txt files
+
+var app = {
+	settings: {
+		curScreen: 1,//starts at 1
+		curTheme: 0,//index of current theme in settings.themes
+		autosave: true,
+		today: new Date(),
+		selectedDate: new Date(),
+		themes:[
+			["default", 'linear-gradient(132deg, rgb(65, 80, 95) 0.00%, rgb(36, 37, 38) 100.00%)'],
+			["lgray", 'linear-gradient(132deg, rgb(221, 221, 221) 0.00%, rgb(110, 136, 161) 100.00%)'],
+			["pinkvibe", 'linear-gradient(132deg, rgb(253, 54, 133) 0.00%, rgb(254, 207, 215) 100.00%)'],
+			["bisexual", 'linear-gradient(132deg, rgb(21, 213, 235) 0.00%, rgb(255, 0, 191) 100.00%)'],
+			["purplemoon", 'linear-gradient(132deg, rgb(115, 93, 142) 0.00%, rgb(13, 9, 18) 100.00%)'],
+			["copper", 'linear-gradient(132deg, rgb(114, 43, 54) 0.00%, rgb(238, 178, 123) 100.00%)'],
+			["forest", 'linear-gradient(132deg, rgb(125, 199, 144) 0.00%, rgb(11, 59, 23) 100.00%)'],
+			["aqua", 'linear-gradient(132deg, rgb(31, 207, 195) 0.00%, rgb(31, 145, 207) 100.00%)'],
+			["red", 'linear-gradient(292deg, rgb(39, 43, 44) 0.00%, rgb(241, 60, 43) 100.00%)'],
+			["lavender", 'linear-gradient(132deg, rgb(146, 11, 126) 0.00%, rgb(52, 29, 49) 100.00%)'],
+		],
+		colors: {
+			none: "transparent",
+			white: "#ffffff",
+			gray: "#888888",
+			black: "#000000",
+			red: "#ff7272",
+			orange: "#ffa672",
+			yellow: "#ffff72",
+			green: "#72ff72",
+			cyan: "#72ffff",
+			indigo: "#7272ff",
+			purple: "#c672ff",
+			magenta: "#ff72d7",
+		},
+	},
+	user: {
+		name: "Izzy (placeholder name)",
+	},
+	calendar: {
+		daySplitChar: "",
+		dataSplitChar: "◙",
+		curDay: "",
+		exportData: "",
+	},
+};
+
+
+//nav buttons
+$(".nav button").click(function(){
+	var curBtnClass = $(this)[0].className.split(" ");// outputs "classname" AND "current" if its the current screen
+	var screenLabel = $(this).attr("data-label");
+	var index = curBtnClass[1];
+	app.settings.curScreen = index;
+	$(".screen").hide();
+	$(".screen."+index).show();
+	$(".nav button.current").removeClass("current");
+	$(".nav > h2").text(screenLabel);
+	$(this).addClass("current");
+});
+
+//autosave functions
+$('select.dayCol.dropdown').on('change', function (e) {
+	if(app.settings.autosave){
+		//update preview dot based on dropdown option selected
+		var optionSelected = $("option:selected", this);
+		var valueSelected = this.value, optionIndex = $("select.theme.dropdown option").index(optionSelected);
+		var getSelectedCol = app.settings.colors[valueSelected]==undefined?"transparent":app.settings.colors[valueSelected];
+		$(".colorWrapper .previewDot").css("background",getSelectedCol);
+		//now attach color to the day data
+		var curDate = (app.settings.selectedDate+"").split(" ");
+		var newDateLabel = curDate[1]+"-"+curDate[2]+"-"+curDate[3];
+		var getThoughts = readData(newDateLabel);
+		if(getThoughts !== undefined){
+			var thoughts = getThoughts.split(app.calendar.daySplitChar);
+			if(getSelectedCol !== 'transparent'){
+				if(thoughts.length == 2){//if data doesn't contain color info, add it
+					setData(newDateLabel, getThoughts+app.calendar.daySplitChar+getSelectedCol);
+				}else if(thoughts.length == 3){//otherwise, update it
+					setData(newDateLabel, thoughts[0]+app.calendar.daySplitChar+thoughts[1]+app.calendar.daySplitChar+getSelectedCol);
+				}
+			}else{//if set to none/transparent, and has color data, remove it
+				if(thoughts.length == 3){setData(newDateLabel, thoughts[0]+app.calendar.daySplitChar+thoughts[1]);}
+			}
+		}
+		getThoughts = readData(newDateLabel);
+	}
+});
+$('.appWrapper').delegate('.today.screen input.dayLabel', 'keyup change', function(){
+	if(app.settings.autosave){
+		var curDate = (app.settings.selectedDate+"").split(" ");
+		var dateLabel = curDate[1]+"-"+curDate[2]+"-"+curDate[3];
+		if(readData(dateLabel) !== undefined){
+			var curData = readData(dateLabel).split(app.calendar.daySplitChar);
+			if(curData[2] !== undefined){
+				setData(dateLabel,this.value+app.calendar.daySplitChar+curData[1]+app.calendar.daySplitChar+curData[2]);
+			}else{
+				setData(dateLabel,this.value+app.calendar.daySplitChar+curData[1]+app.calendar.daySplitChar);
+			}
+			$(".calendarWrapper ul li.selected p").text(this.value);
+		}else{
+			setData(dateLabel,this.value+app.calendar.daySplitChar);
+		}
+	}
+});
+$('.appWrapper').delegate('.today.screen textarea.log', 'keyup change', function(){
+	if(app.settings.autosave){
+		var curDate = (app.settings.selectedDate+"").split(" ");
+		//set localstorage to day selected label (to be dynamic)
+		var dayText = $(".today.screen > h2").text().replace(",","").split(" ");
+		var dateLabel = dayText[1]+"-"+dayText[2]+"-"+dayText[3];
+		var getThoughts = readData(dateLabel);
+		//console.log(getThoughts);
+		if(getThoughts !== undefined){
+			var thoughts = getThoughts.split(app.calendar.daySplitChar);
+			if(thoughts[2] !== undefined){
+				//console.log("editing text with a color at the end!!!");
+				setData(dateLabel,thoughts[0]+app.calendar.daySplitChar+this.value+app.calendar.daySplitChar+thoughts[2]);
+			}else{
+				//console.log("editing text with no color data detected");
+				setData(dateLabel,thoughts[0]+app.calendar.daySplitChar+this.value);
+			}
+		}else{
+			//console.log("apparently no data exists, create some!");
+			setData(dateLabel,app.calendar.daySplitChar+this.value);
+		}
+		//console.log(readData(dateLabel));
+	}
+});
+//calendar screen
+$(".calendarWrapper ul:not(.titles) li").click(function(e){
+	var dateSelected = Number($(this).find("h2").text());
+	var daySummary = $(this).find("p").text();
+	$(".calendarWrapper ul li.selected").removeClass("selected");
+	$(this).addClass("selected");
+});
+$(".calendar.screen button.editDay").click(function(){
+	//get a date from the selected day and update app.settings.selectedDate
+	var selIndex = $("li.selected h2").text();
+	var date = (app.settings.today+"").split(" ");
+	var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	app.settings.selectedDate = new Date(date[3],months.indexOf(date[1]),selIndex);
+	switchScreens(2);
+	var curDate = (app.settings.selectedDate+"").split(" ");
+	var dateLabel = curDate[1]+"-"+curDate[2]+"-"+curDate[3];
+	console.log(readData(dateLabel));
+	//now update the other screen's UI
+	updateLogbook(app.settings.selectedDate);
+});
+$(".calendar.screen button.prevMonth").click(function(){
+	var prevDate = app.settings.today;
+	prevDate.setMonth(prevDate.getMonth() - 1);
+	updateCalendar(prevDate);
+});
+$(".calendar.screen button.nextMonth").click(function(){
+	var prevDate = app.settings.today;
+	prevDate.setMonth(prevDate.getMonth() + 1);
+	updateCalendar(prevDate);
+});
+//logbook screen
+$(".today.screen button.cancel").click(function(){
+	switchScreens(1);
+	updateCalendar(app.settings.today);
+});
+$(".today.screen button.save").click(function(){
+	//actually save the data, don't just hit the back button
+	//copy functions for autosaving
+	
+	//trigger "saved!" banner pop-up on successful save
+	switchScreens(1);
+	updateCalendar(app.settings.today);
+});
+//settings screen
+$('select.theme.dropdown').on('change', function (e) {
+	var optionSelected = $("option:selected", this);
+	var valueSelected = this.value, optionIndex = $("select.theme.dropdown option").index(optionSelected);
+	$("html,body").css("background",app.settings.themes[optionIndex][1]);
+	setData("logApp_theme",optionIndex);
+	app.settings.curTheme = optionIndex;
+});
+$(".settings.screen button.export").click(function(){
+	download(app.user.name+"s_logbook.txt", generateExport(app.calendar.dataSplitChar));
+});
+
+
+
+//store data locally, until you can replace these with google docs api: https://developers.google.com/docs/api/reference/rest
+function setData(label,data){
+	if (typeof(Storage) !== "undefined") {
+    localStorage.setItem(label,data);
+  } else {console.log("Error, your browser doesn't support localStorage");}
+};
+function readData(label){
+	if (typeof(Storage) !== "undefined") {
+    return localStorage[label];
+  } else {console.log("Error, your browser doesn't support localStorage");}
+};
+function removeData(label){
+	if (typeof(Storage) !== "undefined") {
+		localStorage.removeItem(label);
+  } else {console.log("Error, your browser doesn't support localStorage");}
+};
+function loadData(data){
+	var getTheme = readData("logApp_theme");
+	if(readData("logApp_theme") !== undefined){
+		console.log("Loading app theme: ");
+		console.log(readData("logApp_theme"));
+	}
+};
+
+
+//update screen ui elements based on day (and grabbing that day's data)
+function updateLogbook(day){
+	//reset textbox values & preview dot to load new data afterwards (if applicable)
+	$(".today.screen input.dayLabel").val('');
+	$(".today.screen textarea.log").val('');
+	$('select.dayCol.dropdown').val('none');
+	$(".colorWrapper .previewDot").css("background",app.settings.colors['none']);
+	var curDate = (day+"").split(" ");
+	var dateLabel = curDate[1]+"-"+curDate[2]+"-"+curDate[3];
+	var getThoughts = readData(dateLabel);
+	$(".today.screen h2").text("Day: "+curDate[1]+" "+curDate[2]+", "+curDate[3]);
+	if(getThoughts !== undefined && getThoughts.length > 1){
+		var thoughts = getThoughts.split(app.calendar.daySplitChar);
+		$(".today.screen input.dayLabel").val(thoughts[0]);
+		$(".today.screen textarea.log").val(thoughts[1]);
+		if(thoughts.length == 3){//color data available, plug it in!
+			var colData = thoughts[2];
+			for (var key in app.settings.colors) {
+				if (app.settings.colors.hasOwnProperty(key) && app.settings.colors[key] == colData) {
+					$('select.dayCol.dropdown').val(key);
+					$(".colorWrapper .previewDot").css("background",app.settings.colors[key]);
+					//console.log(key+" "+app.settings.colors[key]);
+				}
+			}
+		}else{
+			//console.log("no color data found for this day");
+			$('select.dayCol.dropdown').val('none');
+			$(".colorWrapper .previewDot").css("background",app.settings.colors['none']);
+		}
+	}
+};
+function updateCalendar(day){
+	var curDate = (day+"").split(" ");
+	var dateLabel = curDate[1]+"-"+curDate[2]+"-"+curDate[3];
+	var getThoughts = readData(dateLabel);
+	var curNumDate = curDate[2], daysList = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+	$(".calendarWrapper ul:not(.titles) li").removeClass("today").removeClass("selected").css("display","inline-block");
+	$(".calendar.screen > h2").text(day.toLocaleString('default', { month: 'long' })+" "+curDate[3]);
+	$(".calendarWrapper ul:not(.titles) li p").text("");
+	$(".calendarWrapper ul:not(.titles) li h2 b").remove();
+	
+	//highlight current day, if current month is selected
+	if(day.getMonth() == app.settings.selectedDate.getMonth() && app.settings.selectedDate.getYear() == day.getYear()){
+		$(".calendarWrapper ul:not(.titles) li").eq(curNumDate-1).addClass("today").addClass("selected");
+	}
+	
+	//loop through each day and add the preview text to it, + color/mood element
+	var dateIsValid = function(date) {return date instanceof Date && !isNaN(date);};
+	var daysInMonth = function(month, year) {return new Date(year, month, 0).getDate();}
+	for(var i=0;i<31;i++){
+		var index = i+1;
+		
+		//hide unnecessary days that aren't valid to the month being previewed
+		var monthPadding = ((day.getMonth()+1)<10?("0"+(day.getMonth()+1)):(day.getMonth()+1));
+		var getCurDate = new Date(curDate[3]+"-"+monthPadding+"-"+dayIndex);
+		if(index > daysInMonth(monthPadding,curDate[3])){
+			//console.log("Deleting day "+index);
+			var getCurDayElem = $(".calendarWrapper ul:not(.titles) li").eq(i).css("display","none");
+		}
+		
+		var dayIndex = (index<10?"0"+index:index);
+		var newDateLabel = curDate[1]+"-"+dayIndex+"-"+curDate[3];
+		//if data exists for current day, fill the current calendar item with that day's title info + mood color
+		if(readData(newDateLabel) !== undefined){
+			var newCurDate = readData(newDateLabel).split(app.calendar.daySplitChar);
+			var getCurDayElem = $(".calendarWrapper ul:not(.titles) li").eq(i);
+			getCurDayElem.find("p").text(newCurDate[0]);
+			//console.log(getCurDayElem.find("h2").children());
+			if(newCurDate[2] !== undefined){
+				getCurDayElem.find("h2").append("<b class='mood' style='background:"+newCurDate[2]+"'></b>");
+			}
+			//check for color data, then add <b class='mood'></b> to the end of h2
+		}
+	}
+	
+	//assign "Mon-Fri" labels to correct number dates
+	var dateOffset = daysList.indexOf(curDate[0]);
+	var dayOffset = dateOffset - $(".calendarWrapper ul li.selected").index();
+	for(var i=0;i<7;i++){$(".calendarWrapper ul.titles li").eq(i).text(daysList[(7+(i+dayOffset))%7]);}
+};
+function updateSettings(data){
+	$(".settings.screen .name").text(app.user.name);//give user a way to update this eventually lol
+	$('select.theme.dropdown').val(app.settings.themes[app.settings.curTheme][0]);
+	if(app.settings.autosave){$(".settings.screen input[type='checkbox']").attr("checked", true);}
+};
+
+function switchScreens(screen){
+	app.settings.curScreen = screen;
+	$("div.screen").hide();
+	$("div.screen."+app.settings.curScreen).show();
+	$(".nav button.current").removeClass("current");
+	var screenLabel = $(".nav button").eq(screen-1).attr("data-label");
+	$(".nav > h2").text(screenLabel);
+	$(".nav button").eq(screen-1).addClass("current");
+};
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);element.style.display = 'none';
+  document.body.appendChild(element);element.click();document.body.removeChild(element);
+}
+function generateExport(splitChar){//◙
+	var output = "";
+	output += app.settings.curScreen+splitChar+"\n"+app.settings.curTheme+splitChar+"\n"+app.settings.autosave+splitChar+"\n"+app.user.name+splitChar+"\n";
+	for(var i=0;i<localStorage.length;i++){
+		//TODO: THIS IS CURRENTLY DUMPING _ALL OF THE USERS LOCAL STORAGE DATA_ INTO A TXT FILE...
+		//only load values that are regex valid to ones we manually create
+		var curValues = Object.values(localStorage)[i];
+		var curKeys = Object.keys(localStorage)[i];
+		output += curKeys +splitChar+"\n"+ curValues +splitChar+"\n";
+	}
+	app.calendar.exportData = output;
+	return app.calendar.exportData;
+};
+
+(function init(){
+	//load user variables here on page load to restore previous data
+	var curDate = (app.settings.today+"").split(" ");
+	var dateLabel = curDate[1]+"-"+curDate[2]+"-"+curDate[3];
+	var getThoughts = readData(dateLabel);
+	if(getThoughts == undefined || getThoughts == app.calendar.daySplitChar){setData(dateLabel,app.calendar.daySplitChar);}
+	var getThemeInd = readData("logApp_theme");
+	if(getThemeInd !== undefined){app.settings.curTheme = getThemeInd;}
+	
+	//set general ui settings
+	$("html,body").css("background",app.settings.themes[app.settings.curTheme][1]);
+	$("div.screen").hide();
+	$("div.screen."+app.settings.curScreen).show();
+	$(".nav button.current").removeClass("current");
+	$(".nav button").eq(app.settings.curScreen-1).addClass("current");
+	$(".nav > h2").text($(".nav button.current").attr("data-label"));
+	
+	//calendar
+	updateCalendar(app.settings.today);
+	$(".calendar.screen > h1").text("Today is "+curDate[0]+" "+curDate[1]+" "+curDate[2]+", "+curDate[3]);
+	
+	//logbook
+	updateLogbook(app.settings.today);
+	
+	//settings menu
+	updateSettings();
+})();
+
+
+</script>
+</body>
+</html>
