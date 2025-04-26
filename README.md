@@ -1,2 +1,2 @@
 # Testing
-edusphere etsting
+edusphere testing
